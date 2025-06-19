@@ -1,0 +1,134 @@
+\documentclass[10pt]{article}        	%sets the font to 12 pt and says this is an article (as opposed to book or other documents)
+\usepackage{amsfonts, amssymb, bbm, amsmath}	
+\usepackage{braket, graphicx, lipsum, geometry}
+\usepackage{mathrsfs, setspace}
+
+\setstretch{1.1}
+
+%\usepackage[light]{kurier}
+%\usepackage[light]{CormorantGaramond}
+%\usepackage{boisik}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+% packages to get the fonts, symbols used in most math
+  
+%\usepackage{setspace}               		% Together with \doublespacing below allows for doublespacing of the document
+
+\oddsidemargin=-0.5cm                 	% These three commands create the margins required for class
+\geometry{margin=1.25in}
+%\setlength{\textwidth}{6.5in}         	%
+\addtolength{\voffset}{-20pt}        		%
+\addtolength{\headsep}{25pt}           	%
+\pagestyle{myheadings}                           	% tells LaTeX to allow you to enter information in the heading
+\markright{Paarth Tara \hfill} 	% put your name instead of Murphy Waggoner 
+
+\newcommand{\eqn}[0]{\begin{array}{rcl}}%begin an aligned equation - allows for aligning = or inequalities.  Always use with $$ $$
+\newcommand{\eqnend}[0]{\end{array} }  	%end the aligned equation
+
+\newcommand{\qed}[0]{$\square$}        	% make an unfilled square the default for ending a proof
+
+\newcommand{\ketbra}[2]{\ket{#1}\bra{#2}}
+\newcommand{\curlyparen}[1]{\left\{#1\right\}}
+\newcommand{\trace}[1]{\text{tr}\{#1\}}
+\newcommand{\Prob}[1]{\text{Prob}(#1)}
+\newcommand{\defeq}{\stackrel{\text{def}}=}
+\newcommand{\vecii}[2]{\begin{pmatrix}
+	#1 \\ #2
+\end{pmatrix}}
+\newcommand{\paren}[1]{\left(#1\right)}
+\newcommand{\parfrac}[2]{\paren{\frac{#1}{#2}}}
+
+\newcommand{\problem}[3]{{\noindent \textbf{#1.} \textit{#2}
+\newcommand{\ts}{\textsuperscript} % places text above
+
+\smallskip
+\noindent \textsc{Solution}. #3}}
+
+%\doublespacing                         	% Together with the package setspace above allows for doublespacing of the document
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% HEAD %%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{center}
+	\large{\textsc{SFI Research --- Notes 1}}\\\vspace{6pt}
+	\small{\text{Summer 2025}}
+\end{center}
+%\noindent\rule{\textwidth}{0.3pt}
+\vspace{7pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% HEAD %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% BODY %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\noindent \textbf{Problem 1.} We have a game that starts with $k$ dots assorted into a row. $$\circ\circ\cdots \circ\circ$$ The game proceeds as follows. Each dot is \textit{movable} if there exists a stack of dots adjacent to it. That is, a dot is \textit{not movable} only if it is not directly surrounded by any dots. For each time step, a random movable dot is moved to one of the adjacent positions at random. The game proceeds until isolated \textit{stacks} have been formed, at which point the game stalls.
+
+The question in this game is the nature of the final state of the system. Many questions can be asked, such as:
+\begin{itemize}
+	\item What is the average stack length at the end of the game?
+	\item What is the average number of stacks, or the average number of gaps or gap length?
+\end{itemize}
+
+\noindent This problem encapsulates some elements of the slow-relaxation and frustration processes seen in glassy systems, and is one of many \textit{toy models} made to get a sense of these slow-relaxation dynamics.
+
+\bigskip
+\noindent \textbf{Example Game.} Consider a system of 6 dots. Here's an example evolution\footnote{$\stackrel{k}{\circ}$ denotes a stack of $k$ circles.}: $$\circ\circ\circ\circ\circ\,\circ \rightarrow \_\stackrel{2}{\circ}\circ\circ\circ\,\circ\rightarrow \_\stackrel{3}{\circ}\_\circ\circ\,\circ\rightarrow \_\stackrel{3}{\circ}\_\_\stackrel{2}{\circ}\circ\rightarrow \_\stackrel{3}{\circ}\_\_\circ\stackrel{2}{\circ}\rightarrow \_\stackrel{3}{\circ}\_\_\_\stackrel{3}{\circ}.$$ At this point, the final stacks cannot change. Note that there can be lots of flip-flopping between states, and the relaxation to the final state can be very slow, similar to what is seen in many glassy systems. This is a fundamental property of this game.
+
+\bigskip
+\noindent \textbf{Notes.} I had failed to really think about this aspect of the game before, the slow-relaxation. A certain final configuration can be achieved in a number of ways, for various scales of time. For example, there can be nearly infinite flip-flopping before the stacks finally settle to a certain pattern.
+
+For this reason, even a computerized enumeration of this game would be insufficient for a full analysis (given the algorithm is naive enough). There are two important questions, more,
+
+\begin{itemize}
+	\item Do we need to consider the \textit{very} long-term behavior of the game to get an idea of it? (If so, then this game becomes way more interesting).
+	\item Is it useful to decompose the final states as those that are achievable at some time $T$, and to vary $T$ to get increasingly greater ``resolution'' of the final state dynamics?
+\end{itemize}
+
+\bigskip
+\noindent \textbf{Proposition.} For a $k$-lattice game (not on a ring), the number of final possible arrangements of the game is (at least) given by the bound $$\#(\text{final states of }k\text{-lattice})\leq \sum_{s=1}^{\lceil k/2\rceil}{k-s+1\choose s}{k-1\choose s-1}.$$
+
+\bigskip
+\noindent \textit{Proof.} First, let us consider this problem by considering how many \textit{stacks} will be in a final arrangement. Clearly, the final arrangement will be of the form of isolated stacks, as seen in the previous example game. At most, there can be at most $\lceil k/2\rceil$ stacks. Let $s$ denote the number of stacks in a final arrangement, and let us count the number of ways the final system can achieve a configuration of $s$ stacks.
+
+First, let us count the number of ways we can achieve $s$ isolated stacks on a $k$-lattice. ``Isolated'' means that each stack is separated by another stack by at least one empty gap. Let us put in these $s-1$ gaps to the right of each of the first $s-1$ stacks implicitly. We remove these gaps from our consideration, and are left with $k-(s-1)=k-s+1$ slots with $s$ stacks and remaining gaps. The way to arrange these is $${k-s+1\choose s},$$ and upon inserting back the implicit $s-1$ gaps, we are left with this number of unique stacking arrangements.
+
+Now, for each stacking arrangement, let us count the number of ways to partition the $k$ balls between the $s$ stacks. Each stack has at least one ball, so automatically we are actually partitioning $k-s$ balls into $s$ stacks (with each stack having at least zero balls). We have $s-1$ dividers and $k-s$ balls, so a total of $(k-s)+(s-1)=k-1$ objects and $s-1$ dividers for a total of $${k-1\choose s-1}$$ arrangements. Hence, if every stacking arrangement is theoretically possible, then the number of possible unique final states is given by $$\sum_{s=1}^{\lceil k/2\rceil} {k-s+1\choose s}{k-1\choose s-1}.$$ This statement is not proven, so we have just a bound on the number of final states in a $k$-lattice, right now.
+
+
+\bigskip
+\noindent \textbf{Task.} Manually enumerate a number of games, and calculate their probabilities (accounting for the flip-flopping dynamics), and see if they have a simple nature for small $k$. Proceed to write both (1) an enumeration and (2) a simulation of the game to see if it can provide some insight into large $k$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% BODY %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% EXAMPLE %%%%%%%%%%%%%%%%%%%%%%%
+%\problem{1}{Problem statement.}{\lipsum[42]}{0.55cm}
+%
+%\bigskip
+%\problem{2}{Problem statement.}{
+%	\problem{a}{Sub-problem 1}{\lipsum[42]}{1.1cm}
+%}{0.55cm}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
